@@ -83,10 +83,10 @@ class BST(Generic[T, K]):
         :param value: a node in the tree
         :return:
         """
-        if value < cur_node.value:
+        if value < self.key(cur_node.value):
             # Base Case
             if cur_node.left is None:
-                cur_node.left = BSTNode(value = value, parent = cur_node)
+                cur_node.left = BSTNode(value)
                 self._tree_len += 1
             # Recurse
             else:
@@ -94,7 +94,7 @@ class BST(Generic[T, K]):
         else:
             # Base Case
             if cur_node.right is None:
-                cur_node.right = BSTNode(value = value, parent = cur_node)
+                cur_node.right = BSTNode(value)
                 self._tree_len += 1
             # Recurse
             else:
@@ -174,10 +174,8 @@ class BST(Generic[T, K]):
 
     def _remove_value(self, value: K, key: Callable[[T], K] = lambda x: x) -> None:
         cur_node = self.root
-        parent = cur_node.parent
-        #parent = None
-        if value != key(cur_node.value):
-            raise MissingValueError()
+        #parent = cur_node.parent
+        parent = None
         while cur_node is not None:
             if value == key(cur_node.value): # located the node to remove 
                 if cur_node.left is None and cur_node.right is None:
@@ -187,7 +185,7 @@ class BST(Generic[T, K]):
                         parent.left = None
                     else:
                         parent.right = None
-                elif cur_node.node is None:
+                elif cur_node.right is None:
                     if parent is None:
                         self.root = cur_node.left
                     elif parent.left == cur_node:
@@ -205,9 +203,9 @@ class BST(Generic[T, K]):
                     successor_node = cur_node.right
                     while successor_node.left is not None:
                         successor_node = successor_node.left
-                        succ_data = successor_node.value
-                        self._remove_value(value, successor_node.value)
-                        cur_node.value = succ_data
+                    succ_data = successor_node.value # temp
+                    self._remove_value(value, successor_node.value)
+                    cur_node.value = succ_data # node found and removed 
                 return
             elif key(cur_node.value) < value: # search right
                 parent = cur_node
@@ -215,6 +213,42 @@ class BST(Generic[T, K]):
             else:
                 parent = cur_node
                 cur_node = cur_node.left
+        #raise MissingValueError()
+
+        # if value != key(cur_node.value):
+        #     raise MissingValueError()
+        # while cur_node is not None:
+        #     if value == key(cur_node.value): # located the node to remove 
+        #         if cur_node.left is None and cur_node.right is None:
+        #                 self.root = None
+        #         elif cur_node.right is None:
+        #             if parent is None:
+        #                 self.root = cur_node.left
+        #             elif parent.left == cur_node:
+        #                 parent.left = cur_node.left
+        #             else:
+        #                 parent.right = cur_node.left
+        #         elif cur_node.left is None:
+        #             if parent is None:
+        #                 self.root = cur_node.right
+        #             elif parent.left == cur_node:
+        #                 parent.left = cur_node.right
+        #             else:
+        #                 parent.right = cur_node.right
+        #         else: # find successor node, left most child of right subtree
+        #             successor_node = cur_node.right
+        #             while successor_node.left is not None:
+        #                 successor_node = successor_node.left
+        #                 succ_data = successor_node.value
+        #                 self._remove_value(value, successor_node.value)
+        #                 cur_node.value = succ_data
+        #         raise MissingValueError()
+        #     elif key(cur_node.value) < value: # search right
+        #         parent = cur_node
+        #         cur_node = cur_node.right
+        #     else:
+        #         parent = cur_node
+        #         cur_node = cur_node.left
 
 
                 # if cur_node.right is None and cur_node.left: # if root.left is not none
@@ -252,10 +286,28 @@ class BST(Generic[T, K]):
         return BST(new_root, new_key)
 
 node = BSTNode(10)
+node.right = BSTNode(12)
+node.left = BSTNode(5)
+node.value
+node.left.value
+node.right.value
+
 tree = BST(node)
 
 tree.root.value
 
 tree.add_value(8)
-tree.root.right.value
+root_left_child = tree.root.left # root 10's left child's value is 5
+root_left_child.right.value # left child 5's right child value is now 8 
+
+# tree.root.left.right.value
+# tree.root.left.value
+# tree.root.right.value
+
+tree.get_node(8)
 tree.get_node(8).value
+
+tree.remove_value(8)
+
+for left in iter(tree.root.left):
+     print(left.value)

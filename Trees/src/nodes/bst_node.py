@@ -19,18 +19,22 @@ class BSTNode(Generic[T]):
         :param parent: an optional parent node
         """
         self.value = value
-        self.left: Optional[Iterable["BSTNode[T]"]] = None
-        self.right: Optional[Iterable["BSTNode[T]"]] = None
+        self.left: "BSTNode[T]" = None
+        self.right: "BSTNode[T]" = None
         self.parent = parent
         self.children = children
         self.num_of_children = 0
         if self.children:
-            self.num_of_children = len(self.children)
-            if len(self.children) == 1:
-                self.left.value = next(self.children)
-            else:
-                self.left.value = next(self.children)
-                self.right.value = next(self.children)
+            self.left.value = next(self.children)
+            self.right.value = next(self.children)
+
+
+    ## might just be easier to add & remove nodes in node class:
+    def remove_value(self):
+        ...
+
+    def add_value(self):
+        ...
 
 
     # def replace_child(self, cur_child: "BSTNode[T]", new_node: "BSTNode[T]") -> None:
@@ -44,11 +48,12 @@ class BSTNode(Generic[T]):
         Iterate over the children of this node.
         :return:
         """
-
         if self.left is not None:
             yield self.left
         if self.right is not None:
             yield self.right
+
+    #def get_children(self)
 
     def __deepcopy__(self, memodict) -> "BSTNode[T]":
         """
