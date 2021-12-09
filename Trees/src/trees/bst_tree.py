@@ -27,6 +27,10 @@ class BST(Generic[T, K]):
         self.root = root
         self.key = key
         self._tree_len = 0
+        # if self.root is not None:
+        #     self._tree_len = 1
+        # else:
+        #     self._tree_len = 0
 
     @property
     def height(self) -> int:
@@ -35,35 +39,59 @@ class BST(Generic[T, K]):
         :return:
         """
         # Base Case
-        if self.root is None:
+        cur_node = self.root
+        if cur_node is None:
             return -1
-        # Recurse
         else:
-            return self._height(self.root)
+            left_depth = self._height(cur_node.left)
+            right_depth = self._height(cur_node.right)
+            if self.key(left_depth.value) > self.key(right_depth.value):
+                return self.key(left_depth.value) + 1
+            else:
+                return self.key(right_depth.value) + 1
+        #return self._height(self.root)
 
-    def _height(self, cur_node: BSTNode[T]) -> int:
-        """
-        Get the maximum number of levels in the tree, either right or left
-        Add 1 to account for root node level
-        """
-        return max(self._height(cur_node.left), self._height(cur_node.right)) + 1
+    # def _height(self, cur_node: BSTNode[T]) -> int:
+    #     """
+    #     Get the max depth of the tree, either right or left
+    #     Add 1 to account for root node level
+    #     """
+    #     # Base Case
+    #     if cur_node is None:
+    #         return -1
+    #     else:
+    #         left_depth = self._height(cur_node.left)
+    #         right_depth = self._height(cur_node.right)
+    #         if self.key(left_depth.value) > self.key(right_depth.value):
+    #             return self.key(left_depth.value) + 1
+    #         else:
+    #             return self.key(right_depth.value) + 1
+        # elif cur_node.left is None and cur_node.right is None:
+        #     return 0
+        # else:
+        #     return 1 + max(self._height(cur_node.left), self._height(cur_node.right))
+        #else:
+            # Recurse left to get height of left subtree
+        # height_left = self._height(cur_node.left)
+        #     # Recurse right to get height of right subtree
+        # height_right = self._height(cur_node.right)
+        #     # return the max height of left & right + 1 for root level/depth
+        # return max(height_left, height_right) + 1
 
     def __len__(self) -> int:
         """
         :return: the number of nodes in the tree
         """
-        if self.root:
-            return 1
-        else:
-            return self._length(self.root)
+        return self._length(self.root)
 
     def _length(self, cur_node: BSTNode[T]) -> int:
-        if cur_node.left and cur_node.right: # if node has 2 children
-            return self._length(cur_node.left) + self._length(cur_node.right) + 1 # add 1 to account for root node
-        elif cur_node.left and cur_node.right is None:
-            return self._length(cur_node.left) + 1
+        # Base case
+        if not cur_node:
+            return 0
+        # recurse on left child and right child
         else:
-            return self._length(cur_node.right) + 1
+            cur = 1 # add 1 to account for root node
+            return cur + self._length(cur_node.left) + self._length(cur_node.right)
 
     def add_value(self, value: T) -> None:
         """
@@ -72,10 +100,12 @@ class BST(Generic[T, K]):
         :param value:
         :return:
         """
-        if self.root is None:
+        if self.root is None: # if node is inserted in an empty tree, node becomes root
             self.root = BSTNode(value)
+            self._tree_len += 1
         else:
             self._add_value(value, self.root)
+            self._tree_len += 1
 
     def _add_value(self, value: T, cur_node: BSTNode[T]) -> None:
         """
@@ -83,22 +113,30 @@ class BST(Generic[T, K]):
         :param value: a node in the tree
         :return:
         """
-        if value < self.key(cur_node.value):
+        while cur_node is not None:
+            if self.key(value) < self.key(cur_node.value):
             # Base Case
-            if cur_node.left is None:
-                cur_node.left = BSTNode(value)
-                self._tree_len += 1
-            # Recurse
+                if cur_node.left is None:
+                    cur_node = None
+                else:
+                    cur_node = cur_node.left
             else:
-                self._add_value(value, cur_node.left)
-        else:
-            # Base Case
-            if cur_node.right is None:
-                cur_node.right = BSTNode(value)
-                self._tree_len += 1
-            # Recurse
-            else:
-                self._add_value(value, cur_node.right)
+                if cur_node.right is None:
+                    cur_node.right = BSTNode(value)
+                    cur_node = None
+                else:
+                    cur_node = cur_node.right
+        #     # Recurse
+        #     else:
+        #         self._add_value(value, cur_node.left)
+        # else:
+        #     # Base Case
+        #     if cur_node.right is None:
+        #         cur_node.right = BSTNode(value)
+        #         self._tree_len += 1
+        #     # Recurse
+        #     else:
+        #         self._add_value(value, cur_node.right)
 
     def get_node(self, value: K) -> BSTNode[T]:
         """
@@ -109,16 +147,16 @@ class BST(Generic[T, K]):
         """
         return self._get_node(value, self.root)
 
-    def _get_node(self, value: T, root: BSTNode[T]) -> BSTNode[T]:
+    def _get_node(self, value: K, root: BSTNode[T]) -> BSTNode[T]:
         cur_node = root
         while cur_node is not None:
-            if value == cur_node.value:
+            if self.key(value) == self.key(cur_node.value):
                 return cur_node
-            elif value < cur_node.value:
+            elif self.key(value) < self.key(cur_node.value):
                 cur_node = cur_node.left
             else: # value > cur_node.value
                 cur_node = cur_node.right
-        raise MissingValueError()
+        raise MissingValueError
 
     def get_max_node(self) -> BSTNode[T]:
         """
@@ -169,10 +207,15 @@ class BST(Generic[T, K]):
         if self.root is None:
             raise EmptyTreeError()
         else:
-            self._tree_len -= 1
             self._remove_value(value, self.key)
+            self._tree_len -= 1
 
     def _remove_value(self, value: K, key: Callable[[T], K] = lambda x: x) -> None:
+        """
+        Search through the tree while root exists. If node with input value is found, remove node,
+        break out of while loop, return None. If node is not found, raise MissingValueError
+        outside the while loop
+        """
         cur_node = self.root
         parent = None
         while cur_node is not None:
@@ -212,6 +255,7 @@ class BST(Generic[T, K]):
             else:
                 parent = cur_node
                 cur_node = cur_node.left
+        raise MissingValueError()
                 
     def inorder_traversal(self):
         """ 

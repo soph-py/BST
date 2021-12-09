@@ -27,7 +27,7 @@ class BSTNode(Generic[T]):
         self.children = children
         if self.children is not None:
             self._update_children(children)
-        self._num_children = 0 
+        self._count_cur_node_children = 0 
         # self.num_of_children = 0
         # if self.children:
         #     self.left = next(self.children)
@@ -38,9 +38,18 @@ class BSTNode(Generic[T]):
 
     def _update_children(self, children_iterable) -> None:
         self.left = next(children_iterable)
-        self._num_children += 1
         self.right = next(children_iterable)
-        self._num_children += 1
+
+    def count_children(self) -> int:
+        if self.left is None and self.right is None:
+            return self._count_cur_node_children
+        elif self.left and self.right is None:
+            return 1 # has 1 left child 
+        elif self.right and self.left is None:
+            return 1
+        else: # if self.left and self.right are not none, node has 2 children
+            return 2
+
 
     # def replace_child(self, cur_child: "BSTNode[T]", new_node: "BSTNode[T]") -> None:
     #     if cur_child:
