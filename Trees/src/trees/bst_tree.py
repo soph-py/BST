@@ -118,7 +118,7 @@ class BST(Generic[T, K]):
                 cur_node = cur_node.left
             else: # value > cur_node.value
                 cur_node = cur_node.right
-        return None
+        raise MissingValueError()
 
     def get_max_node(self) -> BSTNode[T]:
         """
@@ -174,7 +174,6 @@ class BST(Generic[T, K]):
 
     def _remove_value(self, value: K, key: Callable[[T], K] = lambda x: x) -> None:
         cur_node = self.root
-        #parent = cur_node.parent
         parent = None
         while cur_node is not None:
             if value == key(cur_node.value): # located the node to remove 
@@ -213,49 +212,21 @@ class BST(Generic[T, K]):
             else:
                 parent = cur_node
                 cur_node = cur_node.left
-        #raise MissingValueError()
+                
+    def inorder_traversal(self):
+        """ 
+        Prints all node values in the tree
+        """
+        self._inorder_traversal(self.root)
 
-        # if value != key(cur_node.value):
-        #     raise MissingValueError()
-        # while cur_node is not None:
-        #     if value == key(cur_node.value): # located the node to remove 
-        #         if cur_node.left is None and cur_node.right is None:
-        #                 self.root = None
-        #         elif cur_node.right is None:
-        #             if parent is None:
-        #                 self.root = cur_node.left
-        #             elif parent.left == cur_node:
-        #                 parent.left = cur_node.left
-        #             else:
-        #                 parent.right = cur_node.left
-        #         elif cur_node.left is None:
-        #             if parent is None:
-        #                 self.root = cur_node.right
-        #             elif parent.left == cur_node:
-        #                 parent.left = cur_node.right
-        #             else:
-        #                 parent.right = cur_node.right
-        #         else: # find successor node, left most child of right subtree
-        #             successor_node = cur_node.right
-        #             while successor_node.left is not None:
-        #                 successor_node = successor_node.left
-        #                 succ_data = successor_node.value
-        #                 self._remove_value(value, successor_node.value)
-        #                 cur_node.value = succ_data
-        #         raise MissingValueError()
-        #     elif key(cur_node.value) < value: # search right
-        #         parent = cur_node
-        #         cur_node = cur_node.right
-        #     else:
-        #         parent = cur_node
-        #         cur_node = cur_node.left
-
-
-                # if cur_node.right is None and cur_node.left: # if root.left is not none
-                #     cur_node = cur_node.left # replace with left child
-                # elif cur_node.left is None and cur_node.right:
-                #     cur_node = cur_node.right # replace with right child
-                # elif cur_node.left and cur_node.right: # case when node has 2 children
+    def _inorder_traversal(self, root: BSTNode[T]):
+        """ 
+        Recursive helper function for self.inorder_traversal
+        """
+        if root:
+            self._inorder_traversal(root.left)
+            print(root.value)
+            self._inorder_traversal(root.right)
 
     def __eq__(self, other: object) -> bool:
         if self is other:
@@ -284,30 +255,3 @@ class BST(Generic[T, K]):
         new_root = copy.deepcopy(self.root, memodict)
         new_key = copy.deepcopy(self.key, memodict)
         return BST(new_root, new_key)
-
-node = BSTNode(10)
-node.right = BSTNode(12)
-node.left = BSTNode(5)
-node.value
-node.left.value
-node.right.value
-
-tree = BST(node)
-
-tree.root.value
-
-tree.add_value(8)
-root_left_child = tree.root.left # root 10's left child's value is 5
-root_left_child.right.value # left child 5's right child value is now 8 
-
-# tree.root.left.right.value
-# tree.root.left.value
-# tree.root.right.value
-
-tree.get_node(8)
-tree.get_node(8).value
-
-tree.remove_value(8)
-
-for left in iter(tree.root.left):
-     print(left.value)
