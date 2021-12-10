@@ -4,12 +4,12 @@ from Trees.src.nodes.bst_node import BSTNode
 
 
 class TestBST(unittest.TestCase):
-    def test_create_empty_tree(self):
+    def test_create_empty_tree(self) -> None:
         tree = BST()
         self.assertEqual(len(tree), 0)
         self.assertIsNone(tree.root)
-
-    def test_create_tree(self):
+        
+    def test_create_tree(self) -> None:
         tree = BST()
         tree.add_value(100)
         tree.add_value(80)
@@ -27,7 +27,7 @@ class TestBST(unittest.TestCase):
         self.assertEqual(tree, cmp_tree)
 
 
-    def test_tree_not_eq(self):
+    def test_tree_not_eq(self) -> None:
         tree = BST()
         tree.add_value(100)
         tree.add_value(80)
@@ -44,6 +44,10 @@ class TestBST(unittest.TestCase):
         cmp_tree = BST(root)
         cmp_tree._num_nodes = 5
         self.assertNotEqual(tree, cmp_tree)
+
+    #def test_min_node(self) -> None:
+
+
 
 if __name__ == '__main__':
     unittest.main()
