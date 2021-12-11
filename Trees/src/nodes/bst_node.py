@@ -68,6 +68,15 @@ class BSTNode(Generic[T]):
         copy_node.right = copy.deepcopy(self.right, memodict)
         return copy_node
 
+    def __eq__(self, node_to_compare_to: "BSTNode[K]") -> bool:
+        """
+        This method helps us to compare and equalty of two instances based on properties we define.
+        (To see more detailed explanation I found this site) : https://www.pythontutorial.net/python-oop/python-__eq__/
+
+        we want our nodes to be equal whenever the values are equal
+        """
+        return self.value == node_to_compare_to.value
+
 # root = BSTNode(10)
 # root.value
 

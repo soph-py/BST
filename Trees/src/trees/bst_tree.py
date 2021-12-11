@@ -1,5 +1,5 @@
 import copy
-from typing import Optional, Callable, TypeVar, Generic
+from typing import List, Optional, Callable, TypeVar, Generic
 
 from Trees.src.errors import MissingValueError, EmptyTreeError
 from Trees.src.nodes.bst_node import BSTNode
@@ -29,41 +29,26 @@ class BST(Generic[T, K]):
         self._num_nodes = 0
 
 ## not working properly
-    @property
-    def height(self) -> int:
+    def get_height(self) -> int:
         """
         Compute the height of the tree. If the tree is empty its height is -1
+
+        ADDED NOTE: 
+                    we consider the edges of all possible leaf nodes, say leaf_1, leaf_2, ... , leaf_n 
+                    return max(leaf_i for i within n)
         :return:
         """
-        cur_node = self.root
-        num_nodes = -1
-        # Base Case
+        return self._get_leaf_nodes_and_depth(self.root)
+
+    def _get_leaf_nodes_and_depth(self, cur_node : "BSTNode[K]"):
+
         if cur_node is None:
-            return -1
-        else:
-            left = self.height(cur_node.left)
-            right = self.height(cur_node.right)
-            return 1 + max(left, right)
+            return
 
-    # @property
-    # def height(self) -> int:
-    #     """
-    #     Compute the height of the tree. If the tree is empty its height is -1
-    #     :return:
-    #     """
-    #     num_nodes = -1
-    #     if self.root is not None:
-    #         return self._height(num_nodes+1, self.root)
-    #     else:
-    #         return -1
+        left_nodes = self._get_leaf_nodes_and_depth(cur_node.left)
+        right_nodes = self._get_leaf_nodes_and_depth(cur_node.right)
 
-    # def _height(self, num: int, cur_node: BSTNode[T]) -> int:
-    #     if cur_node is None:
-    #         return -1
-    #     else:
-    #         left = self.height(num + 1, cur_node.left)
-    #         right = self.height(num + 1,cur_node.right)
-    #         return 1 + max(left, right)
+        return max(left_nodes, right_nodes) + 1
 
     def __len__(self) -> int:
         """
