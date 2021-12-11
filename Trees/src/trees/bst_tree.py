@@ -38,9 +38,12 @@ class BST(Generic[T, K]):
                     return max(leaf_i for i within n)
         :return:
         """
+        if self.root is None or (self.root.right is None and self.root.left is None):
+            return 0
+
         return self._get_leaf_nodes_and_depth(self.root)
 
-    def _get_leaf_nodes_and_depth(self, cur_node : "BSTNode[K]"):
+    def _get_leaf_nodes_and_depth(self, cur_node : BSTNode[T]):
 
         if cur_node is None:
             return
